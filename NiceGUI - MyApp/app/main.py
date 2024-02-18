@@ -1,22 +1,55 @@
 from nicegui import ui
 from nicegui.events import ValueChangeEventArguments
 import json
-import os
+import sys, os, shutil
+from loguru import logger
 
-if os.path.exists('/app/testfile.txt'):
-    print('Config found')
-    f= open('/app/testfile.txt','r')
+# Global settings
+settings_file_path = '/app/settings.json'
+settings_data = {}
+global_logs = {'loguru': ''}
+
+# Logger
+
+logger.remove()  # Remove all handlers added so far, including the default one.
+
+# custom function as log handler - will be executed with every log call
+def custom_function(msg):
+  print('yoyo')
+  msg_obj = json.loads(msg)
+  message = msg_obj['record']['message'] #print(msg_obj['text'])
+  level = msg_obj['record']['level']['name']
+  #print('+++ FROM LOGGER: ' + message)
+  global_logs['loguru'] = global_logs['loguru'] + msg_obj['text'] 
+logger.add(custom_function, level="TRACE", format="{time:HH:mm:ss} | {level: <10} | {message}", serialize=True)
+logger.add(sys.stderr, level="TRACE", format="{time:HH:mm:ss} | {level: <10} | {message}")
+
+
+#logger.trace("A trace message.")
+#logger.debug("A debug message.")
+logger.info("An info message.")
+#logger.success("A success message.")
+#logger.warning("A warning message.")
+#logger.error("An error message.")
+#logger.critical("A critical message.")
+
+
+# Check for saved settings
+if os.path.exists(settings_file_path):
+    print('Settings file found:')
+    f= open(settings_file_path,'r')
     contents =f.read()
-    print(contents)
     f.close()
+    settings_data = json.loads(contents)
+    print(settings_data)
 else:
-    print('Config not found')
-
-
-settings_data = {
-    'name': 'Bob', 
-    'age': 17,
-    'OpenAI-Key': 'sk-1234'}
+    print('Settings file not found, using defaults:')
+    settings_data = {
+        'name': 'Bob', 
+        'age': 17,
+        'OpenAI-Key': 'sk-1234'
+    }
+    print(settings_data)
 
 #ui.dark_mode().enable()
 ui.colors(primary='#64748b')
@@ -43,17 +76,18 @@ def show(event: ValueChangeEventArguments):
     ui.notify(f'{name}: {event.value}')
 
 def runCyberApp():
-    cyber_result1.text = 'Lorem ipsum dolor sit amet,' + json.dumps(settings_data, sort_keys=False, indent=2)
+    cyber_result1.text = 'Lorem ipsum dolor sit amet,' + global_logs['loguru'] + json.dumps(settings_data, sort_keys=False, indent=2)
     cyber_result2.value = 'Button was clicked'
 
 def getSettingsAsText():
     settings_as_Text.value = json.dumps(settings_data, sort_keys=False, indent=2)
+    logger.info("Get settings clicked.")
 
 def saveSettings():
-    f=open('/app/testfile.txt','w+')
+    f=open(settings_file_path,'w+')
     f.write(json.dumps(settings_data, sort_keys=False, indent=2))
     f.close()
-    print('Save done.')
+    logger.info("Settings saved.")
 
 
 def appMarketing(ui):
@@ -83,6 +117,7 @@ with ui.left_drawer().classes('bg-gray-100').props('width=300') as left_drawer:
     ui.label('Side menu')
     debug_mode = ui.switch('Debug', value=True, on_change=show)
     with ui.column().bind_visibility_from(debug_mode, 'value'):
+        global_logs_display = ui.textarea('Log:').bind_value(global_logs, 'loguru').style('height: max(200px, 40vh)')
         ui.slider(min=1, max=3)
         ui.toggle({1: 'A', 2: 'B', 3: 'C'})
         ui.number()
