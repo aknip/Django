@@ -9,4 +9,7 @@
 - Execution hangs after "docker run", webpage not available
 - port conflicts?
 
+## Todo:
+
+- Check Docker config and debugging setup in https://github.com/streamsync-cloud/streamsync/discussions/175
 
