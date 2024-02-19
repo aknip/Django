@@ -5,9 +5,20 @@ http://localhost
 - This runs 'main.py'
 - For execuitng a different .py-file use: APP=form-demo.py docker-compose up
 
+# Open in gitpod.io:
+https://gitpod.io/#https://github.com/aknip/Python-Webdev-Django-Streamsync
+
+
 # Infos
 - Browser hot reload => Change in .py file reloads browser automatically
 - Works in Docker and locally
+
+
+# Global variables (across all pages, for all users)
+- Example:
+	- app.storage.general['my_var'] = 0 
+	- app.storage.general['my_var'] = app.storage.general['my_var'] + 1
+# see https://nicegui.io/documentation/section_action_events#storage
 
 # Build your own components (Vue)
 - https://github.com/zauberzeug/nicegui/tree/main/examples/custom_vue_component

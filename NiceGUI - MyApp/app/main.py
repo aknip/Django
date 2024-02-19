@@ -5,6 +5,10 @@ import sys, os, shutil
 from loguru import logger
 
 # Global settings
+
+
+# app.storage.general['my_var'] = app.storage.general['my_var'] + 1
+# see https://nicegui.io/documentation/section_action_events#storage
 settings_file_path = '/app/settings.json'
 settings_data = {}
 global_logs = {'loguru': ''}
@@ -20,7 +24,7 @@ def custom_function(msg):
   message = msg_obj['record']['message'] #print(msg_obj['text'])
   level = msg_obj['record']['level']['name']
   #print('+++ FROM LOGGER: ' + message)
-  global_logs['loguru'] = global_logs['loguru'] + msg_obj['text'] 
+  global_logs['loguru'] = '<li class="log_loguru">' + msg_obj['text'] + '</li>' + global_logs['loguru']
 logger.add(custom_function, level="TRACE", format="{time:HH:mm:ss} | {level: <10} | {message}", serialize=True)
 logger.add(sys.stderr, level="TRACE", format="{time:HH:mm:ss} | {level: <10} | {message}")
 
@@ -68,6 +72,13 @@ ui.add_head_html('''
         .q-page {
             margin-left: 15vw!important
         }
+        .log_loguru {
+            padding-left: 15px;
+            text-indent: -15px;
+        }
+        .loguru_panel {
+            background-color: transparent!important
+        }
     </style>
 ''')
 
@@ -81,7 +92,7 @@ def runCyberApp():
 
 def getSettingsAsText():
     settings_as_Text.value = json.dumps(settings_data, sort_keys=False, indent=2)
-    logger.info("Get settings clicked.")
+    logger.info("Get settings clicked. Some more text to check the log length.")
 
 def saveSettings():
     f=open(settings_file_path,'w+')
@@ -114,13 +125,22 @@ with ui.footer(value=False) as footer:
     ui.label('Footer')
 
 with ui.left_drawer().classes('bg-gray-100').props('width=300') as left_drawer:
-    ui.label('Side menu')
+    #ui.label('Side menu')
     debug_mode = ui.switch('Debug', value=True, on_change=show)
     with ui.column().bind_visibility_from(debug_mode, 'value'):
-        global_logs_display = ui.textarea('Log:').bind_value(global_logs, 'loguru').style('height: max(200px, 40vh)')
-        ui.slider(min=1, max=3)
-        ui.toggle({1: 'A', 2: 'B', 3: 'C'})
-        ui.number()
+        with ui.tabs() as log_tabs:
+            ui.tab('All logs')
+            ui.tab('Main logs')
+        with ui.tab_panels(log_tabs, value='All logs').classes('loguru_panel'): 
+            with ui.tab_panel('All logs'):    
+                global_logs_display = ui.html().bind_content_from(global_logs, 'loguru').style('height: max(200px, 40vh); overflow-y: auto;')
+                #global_logs_display = ui.label().classes('text-l').bind_text_from(global_logs, 'loguru').style('height: max(200px, 40vh)')
+                #global_logs_display2 = ui.textarea('Log:').bind_value(global_logs, 'loguru').style('height: max(200px, 40vh)')
+            with ui.tab_panel('Main logs'):    
+                global_logs_display2 = ui.html().bind_content_from(global_logs, 'loguru').style('height: max(100px, 20vh); overflow-y: auto;')
+    ui.slider(min=1, max=3)
+    ui.toggle({1: 'A', 2: 'B', 3: 'C'})
+    ui.number()
 
 with ui.page_sticky(position='bottom-right', x_offset=20, y_offset=20):
     ui.button(on_click=footer.toggle, icon='contact_support').props('fab')
