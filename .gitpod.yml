@@ -1,0 +1,10 @@
+tasks:
+  - name: Open files
+    command: gp open README.md && gp open node-js/app/src/visual01/index.html
+
+  - name: Parcel -g
+    init: npm install parcel -g
+
+  - name: Start
+    command: cd node-js/app && npm install && npm run start
+    openMode: split-right
