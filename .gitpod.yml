@@ -1,6 +1,6 @@
 tasks:
   - name: Open files
-    command: gp open README.md && gp open app/main.py
+    command: gp open "NiceGUI - Hello World/app/main.py"
 
   - name: NiceGUI
     init: pip install nicegui
