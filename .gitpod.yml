@@ -1,10 +1,10 @@
 tasks:
   - name: Open files
-    command: gp open README.md && gp open node-js/app/src/visual01/index.html
+    command: gp open README.md && gp open app/main.py
 
-  - name: Parcel -g
-    init: npm install parcel -g
+  - name: NiceGUI
+    init: pip install nicegui
 
   - name: Start
-    command: cd node-js/app && npm install && npm run start
+    command: cd "NiceGUI - Hello World/app" && python3 main.py
     openMode: split-right
