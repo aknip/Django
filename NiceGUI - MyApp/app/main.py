@@ -97,9 +97,16 @@ def main():
         ui.link('And many more...', '/documentation').classes('mt-8')
 
 
-
-
-
+    def appSettings(ui):
+        global settings_as_Text
+        ui.label('Content of Settings')   
+        ui.input('OpenAI-Key', on_change=show).bind_value(settings_data, 'OpenAI-Key')
+        ui.input('Text input', on_change=show)
+        more_settings_visible = ui.switch('More Settings', value=False, on_change=show)
+        with ui.column().bind_visibility_from(more_settings_visible, 'value'):
+            ui.button('Show all setttings', on_click=getSettingsAsText)
+            settings_as_Text = ui.textarea('Settings:')
+            ui.button('Save setttings', on_click=saveSettings)
 
 
 
@@ -235,14 +242,7 @@ def main():
         with ui.tab_panel('AI Assistant'):
             ui.label('Content of AI Assistant')
         with ui.tab_panel('Settings'):
-            ui.label('Content of Settings')   
-            ui.input('OpenAI-Key', on_change=show).bind_value(settings_data, 'OpenAI-Key')
-            ui.input('Text input', on_change=show)
-            more_settings_visible = ui.switch('More Settings', value=False, on_change=show)
-            with ui.column().bind_visibility_from(more_settings_visible, 'value'):
-                ui.button('Show all setttings', on_click=getSettingsAsText)
-                settings_as_Text = ui.textarea('Settings:')
-                ui.button('Save setttings', on_click=saveSettings)
+            appSettings(ui)
            
 
 
