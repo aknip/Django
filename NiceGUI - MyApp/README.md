@@ -4,6 +4,8 @@ http://localhost
 
 - This runs 'main.py'
 - For execuitng a different .py-file use: APP=form-demo.py docker-compose up
+- Single page app router based on https://github.com/zauberzeug/nicegui/tree/main/examples/single_page_app
+
 
 
 # Open in gitpod.io:

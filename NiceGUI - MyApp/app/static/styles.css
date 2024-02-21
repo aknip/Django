@@ -1,0 +1,18 @@
+header {
+    padding-left: 15vw!important;
+    height: 88px;
+    padding-top: 40px;
+}
+aside {
+    margin-left: 15vw!important
+}
+.q-page {
+    margin-left: 15vw!important
+}
+.log_loguru {
+    padding-left: 15px;
+    text-indent: -15px;
+}
+.loguru_panel {
+    background-color: transparent!important
+}
