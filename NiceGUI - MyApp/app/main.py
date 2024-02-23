@@ -10,7 +10,7 @@ from app_home import app_home
 from app_settings import app_settings
 
 # Global vars & settings
-settings_file_path = '/app/settings.json' # needs to be global, is needed BEFORE loading settings_data
+SETTINGS_FILE_PATH = '/app/settings.json' # needs to be global, is needed BEFORE loading settings_data
 app.storage.general['global_logs'] = {'loguru': ''} # see https://nicegui.io/documentation/section_action_events#storage
 
 # static files, eg. for css
@@ -26,24 +26,24 @@ def main():
 
     init_logger()
 
-    settings_data = init_settings(settings_file_path)
+    settings_data = init_settings(SETTINGS_FILE_PATH)
 
     # single page router, see https://github.com/zauberzeug/nicegui/tree/main/examples/single_page_app
     router = Router()
     
     @router.add('/')
     def show_home():
-        print('home')
-        tabs.set_value('Home')  
+        tabs.set_value(settings_data['main-nav'][0])  
+        
         
     @router.add('/app1')
     def show_app1():
-        tabs.set_value('App1') # or: panels.set_value('App1')
+        tabs.set_value(settings_data['main-nav'][1]) # or: panels.set_value('App1')
         #ui.label('Content One').classes('text-2xl'). # change content of "router.frame()" => see below
 
     @router.add('/settings')
     def show_settings():
-        tabs.set_value('Settings')      
+        tabs.set_value(settings_data['main-nav'][2])      
     
     # Add css file / styling    
     ui.add_head_html('<link rel="stylesheet" type="text/css" href="static/styles.css">')    
@@ -54,9 +54,9 @@ def main():
     with ui.header().classes(replace='row items-center') as header:
         ui.button(on_click=lambda: left_drawer.toggle(), icon='menu').props('flat color=white')
         with ui.tabs() as tabs:
-            ui.tab('Home').on('click', lambda: router.open(show_home)) 
-            ui.tab('App1').on('click', lambda: router.open(show_app1)) 
-            ui.tab('Settings').on('click', lambda: router.open(show_settings)) 
+            ui.tab(settings_data['main-nav'][0]).on('click', lambda: router.open(show_home)) 
+            ui.tab(settings_data['main-nav'][1]).on('click', lambda: router.open(show_app1)) 
+            ui.tab(settings_data['main-nav'][2]).on('click', lambda: router.open(show_settings)) 
          
 
     with ui.footer(value=False) as footer:
@@ -72,8 +72,6 @@ def main():
             with ui.tab_panels(log_tabs, value='All logs').classes('loguru_panel'): 
                 with ui.tab_panel('All logs'):    
                     global_logs_display = ui.html().bind_content_from(app.storage.general['global_logs'], 'loguru').style('height: max(200px, 40vh); overflow-y: auto;')
-                    #global_logs_display = ui.label().classes('text-l').bind_text_from(global_logs, 'loguru').style('height: max(200px, 40vh)')
-                    #global_logs_display2 = ui.textarea('Log:').bind_value(global_logs, 'loguru').style('height: max(200px, 40vh)')
                 with ui.tab_panel('Main logs'):    
                     global_logs_display2 = ui.html().bind_content_from(app.storage.general['global_logs'], 'loguru').style('height: max(100px, 20vh); overflow-y: auto;')
         ui.slider(min=1, max=3)
@@ -89,14 +87,14 @@ def main():
     router.frame() 
     # **************************************************************************
     
-    with ui.tab_panels(tabs, value='Home').classes('w-full'): # default Tab is 'Marketing'
-        with ui.tab_panel('Home'):
+    with ui.tab_panels(tabs, value=settings_data['main-nav'][0]).classes('w-full'): # default Tab is 'Marketing'
+        with ui.tab_panel(settings_data['main-nav'][0]):
             app_home(ui, settings_data)
 
-        with ui.tab_panel('App1'):
+        with ui.tab_panel(settings_data['main-nav'][1]):
             ui.label('Content of App 1') 
 
-        with ui.tab_panel('Settings'):
+        with ui.tab_panel(settings_data['main-nav'][2]):
             app_settings(ui, settings_data)
            
 ui.run()

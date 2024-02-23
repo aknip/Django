@@ -5,6 +5,9 @@ import json
 from typing import Callable, Dict, Union
 from loguru import logger
 
+
+# single page router, see https://github.com/zauberzeug/nicegui/tree/main/examples/single_page_app
+    
 class RouterFrame(ui.element, component='router_frame.js'):
     pass
 
@@ -62,6 +65,7 @@ def init_settings(settings_file_path):
     else:
         logger.info('Settings file not found, using defaults:')
         settings_data = {
+            'main-nav': ['Home', 'App1', 'Settings'],
             'name': 'Bob', 
             'age': 17,
             'OpenAI-Key': 'sk-1234'
