@@ -10,12 +10,15 @@ http://localhost
 https://gitpod.io/#https://github.com/aknip/Python-Webdev-Django-Streamsync
 
 
-
 # Infos
 - Browser hot reload => Change in .py file reloads browser automatically
 - Works in Docker and locally
 - Uses a customized Docker config for pip install etc.
 
+
+# Run tests
+- In second terminal: docker-compose exec nicegui bash
+- pytest --disable-pytest-warnings
 
 # Application architecture
 - Single page app, routing is client side (see helper_functions.py and router_frame.js)

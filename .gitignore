@@ -6,6 +6,7 @@ dist
 testfile.txt
 settings.json
 *.pickle
+*.log
 screenshots/
 tests/media/
 venv

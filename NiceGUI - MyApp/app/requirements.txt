@@ -1,2 +1,6 @@
 loguru
 nicegui
+pytest
+pytest-asyncio
+
+pytest-playwright

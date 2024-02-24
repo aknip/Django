@@ -7,6 +7,7 @@ from loguru import logger
 from helper_functions import Router, show, init_logger, init_settings
 
 from app_home import app_home
+from app_app1 import app_app1
 from app_settings import app_settings
 
 # Global vars & settings
@@ -92,7 +93,8 @@ def main():
             app_home(ui, settings_data)
 
         with ui.tab_panel(settings_data['main-nav'][1]):
-            ui.label('Content of App 1') 
+            ui.label('App1: wget') 
+            app_app1(ui, settings_data)
 
         with ui.tab_panel(settings_data['main-nav'][2]):
             app_settings(ui, settings_data)
